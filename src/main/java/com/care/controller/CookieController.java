@@ -1,5 +1,4 @@
 package com.care.controller;
-
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -8,36 +7,41 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.RequestMapping;
-
 @Controller
 public class CookieController {
-	
 	@RequestMapping("cookie")
-	public String myCookie(HttpServletRequest request,HttpServletResponse response,@CookieValue(value="myCookie",required = false)//required = 객체가 존재하지 않아 값이 없으면 널값으로 처리해준다
-	Cookie cook,Model model) {
-//		Cookie[] cs = request.getCookies();
-//		if(cs.length !=0) {
-//			for(Cookie c : cs) {
-//				System.out.println(c.getValue() + ":" + c.getName());
-//			}
-//		}
-		
-		
-		
-		
-		if(cook == null) {
-			Cookie cookie = new Cookie("myCookie","쿠키생성");
-			cookie.setMaxAge(5);
-			response.addCookie(cookie);
-			System.out.println("쿠키생성");
+	public String myCookie(HttpServletResponse response,
+@CookieValue(value="myCookie", required=false) Cookie cook,
+								HttpServletRequest request) {
+		Cookie[] cs = request.getCookies();
+		if(cs.length != 0) {
+			for(Cookie c : cs) {
+			System.out.println(c.getValue()+":"+c.getName());
+			}
+		}
+		System.out.println("cook : "+cook);
+		Cookie cookie = new Cookie("myCookie","쿠키생성");
+		cookie.setMaxAge(5);
+		response.addCookie(cookie);
+		return "cookie";
+	}
+	
+	@RequestMapping("cookie01")
+	public String myCookie(HttpServletResponse response, Model model,
+			@CookieValue(value="myCookie",required=false) Cookie cook){
+		if(cook == null ) {
+			System.out.println("쿠키 생성");
+			cook = new Cookie("myCookie","나의쿠키");
+			cook.setMaxAge(5);
+			response.addCookie(cook);
 			return "cookie";
 		}
-		
 		model.addAttribute("cook",cook.getValue());
 		return "cookie";
-		
-		
-		
+	}
+	@RequestMapping("popup")
+	public String popup() {
+		return "popup";
 	}
 	
 	@RequestMapping("cookie02")
@@ -48,23 +52,27 @@ public class CookieController {
 		System.out.println(cook);
 		return "cookie";
 	}
-	
-	
-	@RequestMapping("pop")
-	public String popup() {
-		return "pop";
+	@RequestMapping("cookieChk")
+	public void cookieChk(HttpServletResponse response) {
+		Cookie cook = new Cookie("myCookie", "나의쿠키");
+		cook.setMaxAge(10000);
+		cook.setPath("/");
+		response.addCookie(cook);
+//		return "popup";
 	}
-	@RequestMapping("cookiechk")
-	public String popupclose(HttpServletResponse response) {
-		Cookie cooki = new Cookie("cooki", "cooki");
-		cooki.setMaxAge(10000);
-		response.addCookie(cooki);
-		
-		return "pop";
-	}
-	
-	
-	
-	
+
+
 	
 }
+
+
+
+
+
+
+
+
+
+
+
+
